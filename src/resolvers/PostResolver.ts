@@ -9,21 +9,17 @@ import { Resolver, Query, Mutation, Ctx, Arg } from 'type-graphql';
 export class PostResolver {
   @Query(() => [Post])
   async getPosts(
-    @Ctx() ctx: MyContext
+    @Ctx() { em }: MyContext
   ): Promise<Post[]> {
-    console.log('ctx', ctx); // outputs: {}
-    console.log('ctx.em:', ctx.em); // outputs: undefined
-
-    return ctx.em.find(Post, {});
+    return em.find(Post, {});
   }
 
   @Query(() => Post, { nullable: true })
   async getPostByUuid(
     @Arg('uuid', () => String) uuid: string,
-    @Ctx() ctx: MyContext
+    @Ctx() { em }: MyContext
   ): Promise<Post | null> {
-    console.log(ctx);
-    return ctx.em.findOne(Post, { uuid })
+    return em.findOne(Post, { uuid })
   }
 
   @Mutation(() => Post)
@@ -74,7 +70,7 @@ export class PostResolver {
   async deletePost(
     @Arg('uuid', () => String) uuid: string,
     @Ctx() { em }: MyContext
-  ): Promise<boolean> {
+  ): Promise<boolean | null> {
     try {
       await em.nativeDelete(Post, { uuid });
       return true;

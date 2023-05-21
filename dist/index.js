@@ -21,6 +21,7 @@ const main = async () => {
             resolvers: [PostResolver_1.PostResolver]
         }),
     });
+    await apolloServer.start();
     const app = (0, express_1.default)();
     app.listen(PORT, () => {
         console.log(`Express server running at port: ${PORT}`);

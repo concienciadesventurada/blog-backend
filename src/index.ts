@@ -25,6 +25,8 @@ const main = async () => {
     }),
   });
 
+  await apolloServer.start();
+
   const app = express();
 
   app.listen(PORT, () => {
