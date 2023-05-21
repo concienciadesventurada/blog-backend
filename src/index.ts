@@ -2,14 +2,16 @@ import 'dotenv/config'
 import { MikroORM } from '@mikro-orm/core';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs } from './schemas';
-import { resolvers } from './resolvers';
+import { PostResolver } from './resolvers/PostResolver';
+import { buildSchema } from 'type-graphql';
+import { expressMiddleware } from '@apollo/server/express4';
+import { json } from 'body-parser';
 import config from './mikro-orm.config';
 import express from 'express';
-import { makeExecutableSchema } from '@graphql-tools/schema';
 
-// TODO: ApolloMiddleware, context and CORS.
+// TODO: CORS, entities relations.
+// NOTE: Got ridden of `startStandaloneServer`, investigate why, thanks to
+// GC on Discord for helping me out.
 
 const main = async () => {
   const PORT = process.env.PORT;
@@ -18,18 +20,20 @@ const main = async () => {
   await orm.getMigrator().up();
 
   const apolloServer = new ApolloServer({
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
+    schema: await buildSchema({
+      resolvers: [PostResolver]
+    }),
   });
 
-  const { url } = await startStandaloneServer(apolloServer, { listen: { port: 4000 } });
-
   const app = express();
-
-  console.log('Apollo server running' + url);
 
   app.listen(PORT, () => {
     console.log(`Express server running at port: ${PORT}`);
   });
+
+  app.use('/graphql', json(), expressMiddleware(apolloServer, {
+    context: async ({ req, res }) => ({ em: orm.em.fork(), req, res }),
+  }));
 
 };
 

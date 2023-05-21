@@ -7,8 +7,11 @@ exports.typeDefs = void 0;
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.typeDefs = (0, graphql_tag_1.default) `
   type Query {
-    getPosts(uuid: String!): [Post]
-    Post(uuid: String!): Post
+    getPosts: [Post!]!
+    getTestPosts: [Post!]!
+    getPostByUuid(uuid: String): Post
+    "TEST RESOLVER"
+    getTest: String
   }
 
   type Post {
