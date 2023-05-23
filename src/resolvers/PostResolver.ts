@@ -66,6 +66,7 @@ export class PostResolver {
     return post;
   }
 
+  // FIX: It deletes but it states cannot return null
   @Mutation(() => Post)
   async deletePost(
     @Arg('uuid', () => String) uuid: string,
