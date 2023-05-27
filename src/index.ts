@@ -12,8 +12,10 @@ import { UserResolver } from './resolvers/UserResolver';
 import RedisStore from "connect-redis";
 import session from "express-session";
 import { createClient } from "redis"
+import cors from 'cors';
 
-// TODO: CORS, entities relations.
+// TODO: Entities' relations. Implement data validation, OAuth || JWT.
+// TODO: Refactoring: Redis, cors and middlewares and mikro-orm.
 
 const main = async () => {
   const PORT = process.env.PORT;
@@ -66,7 +68,14 @@ const main = async () => {
     })
   )
 
-  app.use('/graphql', json(), expressMiddleware(apolloServer, {
+  app.use(
+    '/graphql',
+    cors<cors.CorsRequest>({
+      origin: 'http://localhost:3000',
+      credentials: true
+    }),
+    json(),
+    expressMiddleware(apolloServer, {
     context: async ({ req, res }) => (
       // TODO: Just to avoid CSRF errors and allow mutations. Set proper headers later.
       res.setHeader('x-apollo-operation-name', 'testing-csrf'),

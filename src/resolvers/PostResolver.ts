@@ -5,7 +5,7 @@ import { Resolver, Query, Mutation, Ctx, Arg } from 'type-graphql';
 
 // TODO: Implement proper error handling... once the bug above gets fixed
 
-@Resolver(Post)
+@Resolver()
 export class PostResolver {
   @Query(() => [Post])
   async getPosts(

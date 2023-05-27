@@ -47,7 +47,7 @@ class LoginInput {
   password: string;
 }
 
-@Resolver(User)
+@Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(

@@ -16,6 +16,7 @@ const UserResolver_1 = require("./resolvers/UserResolver");
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const express_session_1 = __importDefault(require("express-session"));
 const redis_1 = require("redis");
+const cors_1 = __importDefault(require("cors"));
 const main = async () => {
     const PORT = process.env.PORT;
     const orm = await core_1.MikroORM.init(mikro_orm_config_1.default);
@@ -52,7 +53,10 @@ const main = async () => {
             sameSite: 'lax'
         }
     }));
-    app.use('/graphql', (0, body_parser_1.json)(), (0, express4_1.expressMiddleware)(apolloServer, {
+    app.use('/graphql', (0, cors_1.default)({
+        origin: 'http://localhost:3000',
+        credentials: true
+    }), (0, body_parser_1.json)(), (0, express4_1.expressMiddleware)(apolloServer, {
         context: async ({ req, res }) => (res.setHeader('x-apollo-operation-name', 'testing-csrf'),
             { em: orm.em.fork(), req, res }),
     }));
