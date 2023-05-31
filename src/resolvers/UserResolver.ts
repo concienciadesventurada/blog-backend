@@ -1,9 +1,18 @@
-import 'reflect-metadata';
-import { User } from '../entities/User';
-import { MyContext } from 'src/interfaces/context.interface';
-import { Resolver, Query, Mutation, Arg, Field, InputType, Ctx, ObjectType } from "type-graphql";
-import * as argon2 from 'argon2';
-import '../session'
+import "reflect-metadata";
+import { User } from "../entities/User";
+import { MyContext } from "src/interfaces/context.interface";
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Arg,
+  Field,
+  InputType,
+  Ctx,
+  ObjectType,
+} from "type-graphql";
+import * as argon2 from "argon2";
+import "../session";
 
 // TODO: Proper user resolvers.
 // TODO: Refactor ObjectTypes and InputTypes.
@@ -50,74 +59,78 @@ class LoginInput {
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(
-    @Ctx() { em, req }: MyContext
-  ) {
+  async me(@Ctx() { em, req }: MyContext) {
     if (!req.session.userId) {
-      return null
+      return null;
     }
-    const user = await em.findOne(User, { uuid: req.session.userId })
+    const user = await em.findOne(User, { uuid: req.session.userId });
 
     return user;
   }
 
   @Query(() => [User])
-  async getUsers(
-    @Ctx() { em }: MyContext
-  ): Promise<User[]> {
+  async getUsers(@Ctx() { em }: MyContext): Promise<User[]> {
     return em.find(User, {});
   }
 
   @Mutation(() => UserResponse)
   async register(
     @Ctx() { em, req }: MyContext,
-    @Arg('options') options: RegisterNewUserInput
+    @Arg("options") options: RegisterNewUserInput
   ) {
     // TODO: Proper validation and refactoring.
     if (options.username.length <= 4) {
       return {
-        errors: [{
-          field: 'Username',
-          message: "Username's length must be at least 4 characters long."
-        }]
-      }
+        errors: [
+          {
+            field: "Username",
+            message: "Username's length must be at least 4 characters long.",
+          },
+        ],
+      };
     }
     if (options.email.length <= 0) {
       return {
-        errors: [{
-          field: 'Email',
-          message: "Email can't be empty"
-        }]
-      }
+        errors: [
+          {
+            field: "Email",
+            message: "Email can't be empty",
+          },
+        ],
+      };
     }
     if (options.password.length <= 8) {
       return {
-        errors: [{
-          field: 'Password',
-          message: "Password must be at least 8 characters long."
-        }]
-      }
+        errors: [
+          {
+            field: "Password",
+            message: "Password must be at least 8 characters long.",
+          },
+        ],
+      };
     }
 
     const user = em.create(User, {
       username: options.username,
       password: await argon2.hash(options.password),
       email: options.email,
-      img: 'oLA',
+      img: "oLA",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
 
     try {
       await em.persistAndFlush(user);
     } catch (err) {
       // TODO: Specify which field failed.
-      if (err.code === '23505') {
+      if (err.code === "23505") {
         return {
-          errors: [{
-            field: 'Username or email',
-            message: "Username or email has already been taken."
-          }]
+          errors: [
+            {
+              field: "Username or email",
+              message: "Username or email has already been taken.",
+            },
+          ],
         };
       }
     }
@@ -131,7 +144,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async login(
     @Ctx() { em, req }: MyContext,
-    @Arg('options') options: LoginInput
+    @Arg("options") options: LoginInput
   ): Promise<UserResponse> {
     // TODO: Proper validation and refactoring.
     const user = await em.findOne(User, { username: options.username });
@@ -140,10 +153,10 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: 'Username',
-            message: "Username doesn't exist."
-          }
-        ]
+            field: "Username",
+            message: "Username doesn't exist.",
+          },
+        ],
       };
     }
 
@@ -153,10 +166,10 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: 'Password',
-            message: "Incorrect password."
-          }
-        ]
+            field: "Password",
+            message: "Incorrect password.",
+          },
+        ],
       };
     }
 

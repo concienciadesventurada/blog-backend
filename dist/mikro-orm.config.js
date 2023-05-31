@@ -8,17 +8,17 @@ const path_1 = __importDefault(require("path"));
 const config = {
     metadataProvider: reflection_1.TsMorphMetadataProvider,
     migrations: {
-        path: path_1.default.join(__dirname, './migrations'),
-        glob: '!(*.d).{js,ts}'
+        path: path_1.default.join(__dirname, "./migrations"),
+        glob: "!(*.d).{js,ts}",
     },
-    entities: ['./dist/entities/*.js'],
-    entitiesTs: ['./src/entities/*.ts'],
-    type: 'postgresql',
-    dbName: 'test',
-    user: 'admin',
-    password: 'admin',
-    debug: process.env.NODE_ENV !== 'production',
-    allowGlobalContext: true
+    entities: ["./dist/entities/*.js"],
+    entitiesTs: ["./src/entities/*.ts"],
+    type: "postgresql",
+    dbName: "test",
+    user: "admin",
+    password: "admin",
+    debug: process.env.NODE_ENV !== "production",
+    allowGlobalContext: true,
 };
 exports.default = config;
 //# sourceMappingURL=mikro-orm.config.js.map
