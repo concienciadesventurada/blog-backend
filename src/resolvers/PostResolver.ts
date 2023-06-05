@@ -23,12 +23,16 @@ export class PostResolver {
   @Mutation(() => Post)
   async createPost(
     @Arg("title", () => String) title: string,
-    @Arg("content", () => String) content: string,
+    @Arg("content", () => String, { nullable: true }) content: string,
+    @Arg("abstract", () => String, { nullable: true }) abstract: string,
+    @Arg("coverImg", () => String, { nullable: true }) coverImg: string,
     @Ctx() { em }: MyContext
   ): Promise<Post | null> {
     const post = em.create(Post, {
       title: title,
       content: content,
+      abstract: abstract,
+      coverImg: coverImg,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

@@ -19,15 +19,26 @@ export class Post {
   @Property({ type: "text" })
   content!: string;
 
+  @Field(() => String, { nullable: true })
+  @Property({ type: "varchar(255)" })
+  abstract?: string;
+
+  @Field(() => String, { nullable: true })
+  @Property({ type: "text" })
+  coverImg?: string;
+
   @Field(() => Date)
   @Property({ type: "date" })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Field(() => Date)
   @Property({ type: "date", onUpdate: () => new Date() })
-  updatedAt: Date;
+  updatedAt!: Date;
 
+  // TODO: Make UTC
   constructor() {
     this.uuid = uuidv4();
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
   }
 }

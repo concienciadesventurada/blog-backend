@@ -16,6 +16,8 @@ const uuid_1 = require("uuid");
 let Post = class Post {
     constructor() {
         this.uuid = (0, uuid_1.v4)();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 };
 __decorate([
@@ -33,6 +35,16 @@ __decorate([
     (0, core_1.Property)({ type: "text" }),
     __metadata("design:type", String)
 ], Post.prototype, "content", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(() => String, { nullable: true }),
+    (0, core_1.Property)({ type: "varchar(255)" }),
+    __metadata("design:type", String)
+], Post.prototype, "abstract", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(() => String, { nullable: true }),
+    (0, core_1.Property)({ type: "text" }),
+    __metadata("design:type", String)
+], Post.prototype, "coverImg", void 0);
 __decorate([
     (0, type_graphql_1.Field)(() => Date),
     (0, core_1.Property)({ type: "date" }),
